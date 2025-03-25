@@ -44,6 +44,12 @@ app.get("/messages", async (req, res) => {
 io.on("connection", (socket) => {
   console.log("A user is connected: ", socket.id);
 
+  socket.on("user_online", async (value) => {
+    console.log("User is online: ", value);
+  });
+
+  // socket.on("load_messages", async () => {});
+
   socket.on("chat_message", async ({ userId, message }) => {
     try {
       console.log("received: ", { userId, message });
@@ -60,7 +66,7 @@ io.on("connection", (socket) => {
         [userId, message]
       );
       console.log("message insert result", result.rows);
-      io.emit(result.rows[0]);
+      io.emit("new_message", result.rows[0]);
     } catch (error) {
       console.error(error);
     }
